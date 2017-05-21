@@ -3,6 +3,7 @@ var COLORS = ['228DFF', 'FF00DE', 'FF1177', 'FF9900', 'FFDD1B', 'B6FF00'];
 
 var langs = {};
 
+var body = document.body;
 var grid = document.getElementById('grid');
 var overlay = document.getElementById('overlay');
 
@@ -41,10 +42,16 @@ function percent(items) {
 	return (100 / items).toFixed(1) + '%';
 }
 
+var OFFSET = 5 * 60 * 1e3;
 var fixedTime = null;
 
 function getTime() {
 	return fixedTime || Date.now();
+}
+
+function updateTime(sign) {
+	fixedTime = sign && getTime() + OFFSET * sign;
+	updateChars();
 }
 
 function getWords() {
@@ -75,23 +82,6 @@ function updateChars() {
 		});
 		index++;
 	});
-}
-
-var OFFSET = 5 * 60 * 1e3;
-
-function checkKey(code) {
-	switch (code) {
-		// Left
-		case 37: fixedTime = getTime() - OFFSET; break;
-		// Right
-		case 39: fixedTime = getTime() + OFFSET; break;
-		// ESC
-		case 27: fixedTime = null; break;
-		// Up
-		case 38: toggleLang(); break;
-		// Down
-		case 40: changeTheme(1); break;
-	}
 }
 
 // Multi language support
@@ -130,6 +120,17 @@ function changeTheme(delta) {
 	overlay.style.display = 'block';
 }
 
+var hammer = new Hammer(body);
+hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+
+hammer.on('doubletap', function () { screenfull.toggle(); } );
+hammer.on('swipeleft', function () { updateTime(-1); });
+hammer.on('swiperight', function () { updateTime(1); });
+hammer.on('press', function () {	updateTime(null); });
+hammer.on('swipeup', function() { toggleLang(); });
+hammer.on('swipedown', function() { changeTheme(1); });
+
+
 window.onload = function () {
 	addDots();
 	detectLang();
@@ -137,9 +138,4 @@ window.onload = function () {
 	// TODO: Improve it, detect how much is missing for next step
 	setInterval(updateChars, 10e3);
 	changeTheme(0);
-
-	document.body.onkeydown = function (e) {
-		checkKey(e.keyCode);
-		updateChars();
-	};
 };
