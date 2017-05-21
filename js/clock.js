@@ -2,6 +2,7 @@ var DOT = '·';
 var COLORS = ['228DFF', 'FF00DE', 'FF1177', 'FF9900', 'FFDD1B', 'B6FF00'];
 
 var langs = {};
+var state = {color:0, lang:'', fx: 1, dots: 1};
 var timeoutId;
 
 var body = document.body;
@@ -16,6 +17,23 @@ function each(list, cb) {
 
 function repeat(str, count) {
 	return Array(count+1).join(str);
+}
+
+function readHash() {
+	location.hash.slice(1).split('&').forEach(function(str) {
+		var p = str.split('=');
+		if (p[0] in state) {
+			state[p[0]] = /^\d+$/.test(p[1]) ? parseInt(p[1]) : p[1];
+		}
+	});
+}
+
+function updateHash() {
+	var hash = [];
+	for (var key in state) {
+		hash.push(key + '=' + state[key]);
+	}
+	location.hash = hash.join('&');
 }
 
 function generateChars() {
@@ -77,6 +95,8 @@ function updateChars() {
 	resetChars(nodes);
 	each(words, function (word) {
 		index = getLang().chars.indexOf(word, index);
+		// Word not found, also to avoid failing when dots=0
+		if (index === -1) return;
 		each(word, function (chr) {
 			nodes[index++].classList.add('on');
 		});
@@ -95,20 +115,19 @@ function scheduleUpdate() {
 
 function toggleLang() {
 	var list = Object.keys(langs);
-	localStorage.lang = list[(list.indexOf(localStorage.lang) + 1) % list.length];
+	state.lang = list[(list.indexOf(state.lang) + 1) % list.length];
 	generateChars();
+	updateHash();
 }
 
 function getLang() {
-	return langs[localStorage.lang];
+	return langs[state.lang];
 }
 
 function detectLang() {
-	if (!localStorage.lang) {
-		var userPref = navigator.language || navigator.userLanguage || '';
-		var pref = userPref.slice(0, 2).toLowerCase();
-		localStorage.lang = (pref in langs ? pref : 'en');
-	}
+	var userPref = navigator.language || navigator.userLanguage || '';
+	var pref = userPref.slice(0, 2).toLowerCase();
+	state.lang = (pref in langs ? pref : 'en');
 }
 
 function addDots() {
@@ -121,10 +140,10 @@ function addDots() {
 // Theming
 
 function changeTheme(delta) {
-	var theme = parseInt(localStorage.theme) || 0;
-	localStorage.theme = theme = (theme + delta) % 6;
-	overlay.style.backgroundColor = '#' + COLORS[theme];
+	state.color = (state.color + delta) % 6;
+	overlay.style.backgroundColor = '#' + COLORS[state.color];
 	overlay.style.display = 'block';
+	updateHash();
 }
 
 var hammer = new Hammer(body);
@@ -137,11 +156,18 @@ hammer.on('press', function () {	updateTime(null); });
 hammer.on('swipeup', function() { toggleLang(); });
 hammer.on('swipedown', function() { changeTheme(1); });
 
-
-window.onload = function () {
-	addDots();
-	detectLang();
+Hammer.on(window, 'load', function () {
+	readHash();
+	if (state.dots) {
+		addDots();
+	}
+	if (!state.lang) {
+		detectLang();
+	}
+	if (!state.fx) {
+		body.classList.add('no-transitions');
+	}
 	generateChars();
 	scheduleUpdate();
 	changeTheme(0);
-};
+});

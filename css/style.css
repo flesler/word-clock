@@ -13,6 +13,10 @@ html, body {
 	overflow: hidden;
 }
 
+.no-transitions * {
+	transition: none !important;
+}
+
 #grid {
 	list-style: none;
 	font-family: AudioWide;
