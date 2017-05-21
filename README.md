@@ -14,6 +14,15 @@ Swipe :arrow_left:️️️️ and :arrow_right:️️️️ to change time
 
 `Double tap` to toggle fullscreen
 
+## Configuration
+
+The state and configuration is persisted on the location's hash. The first 2 should be modified using gestures. After modifying the URL you need to reload to see the changes.
+
+- `color`: A value from 0-5 specifying the color of the clock.
+- `lang`: At the moment, `en` and `es` are supported.
+- `fx`: Change it to `0` to turn off transitions on slower devices.
+- `dots`: Change it to `0` to hide the dots at the bottom that provide 1-minute precision.
+
 ## Demo
 
 See the word-clock in action at https://flesler.github.io/word-clock/
