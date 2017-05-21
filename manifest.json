@@ -1,0 +1,6 @@
+{
+  "name": "Word Clock",
+  "start_url": "/index.html",
+	"display": "fullscreen",
+	"orientation": "landscape"
+}
