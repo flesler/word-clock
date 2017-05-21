@@ -9,7 +9,7 @@ html, body {
 	background-color: #222;
 	background: repeating-linear-gradient(45deg, #2b2b2b 0%, #2b2b2b 10%, #222222 0%, #222222 50%) 0 / 15px 15px;
 	height: 100%;
-	user-select: none;
+	overflow: hidden;
 }
 
 #chars {
@@ -19,21 +19,27 @@ html, body {
 	height: 100%;
 }
 
-	#chars li {
+	li {
 		float: left;
 		text-align: center;
 		font-size: 7vh;
 		transition: all 1s ease-in-out;
 		transition-property: color, text-shadow;
+		pointer-events: none;
 	}
 
 	@media screen and (orientation:portrait) {
-		#chars li {
+		li {
 			font-size: 7vw;
 		}
 	}
 
-	#chars li.break {
+	li.dot {
+		margin-top: -3vh;
+		font-size: 10vh;
+	}
+
+	li.break {
 		clear: left;
 	}
 

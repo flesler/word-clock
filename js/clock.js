@@ -1,3 +1,4 @@
+var DOT = '·';
 var langs = {};
 var container = document.getElementById('chars');
 
@@ -7,18 +8,27 @@ function each(list, cb) {
 	}
 }
 
+function repeat(str, count) {
+	var s = '';
+	while (count-- > 0) s += str;
+	return s;
+}
+
 function generateChars() {
 	// TODO: Show 4 dots for reminder minutes
 	container.innerHTML = '';
+	var cols = getLang().columns;
 	var chars = getLang().chars;
-	var bp = getLang().breakPoint;
-	var compl = chars.length / bp;
+	var rows = chars.length / cols;
 	each(chars, function (chr, i) {
 		var li = document.createElement('li');
 		li.innerHTML = chr;
-		li.style.width = percent(bp);
-		li.style.height = percent(compl);
-		if (i && i % bp === 0) {
+		li.style.width = percent(cols);
+		li.style.height = percent(rows);
+		if (chr === DOT) {
+			li.classList.add('dot');
+		}
+		if (i && i % cols === 0) {
 			li.classList.add('break');
 		}
 		container.appendChild(li);
@@ -41,7 +51,8 @@ function getWords() {
 	var hour = now.getHours() % 12;
 	var mins = now.getMinutes();
 	var rest = mins % 5;
-	return getLang().timeToWords(hour, mins - rest);
+	var dots = repeat(DOT, rest);
+	return getLang().timeToWords(hour, mins - rest).concat(dots);
 }
 
 function resetChars(nodes) {
@@ -65,6 +76,7 @@ function updateChars() {
 }
 
 function initialize() {
+	addDots();
 	lang = detectLang();
 	generateChars();
 	// TODO: Improve it, detect how much is missing for next step
@@ -111,6 +123,13 @@ function detectLang() {
 		var userPref = navigator.language || navigator.userLanguage || '';
 		var pref = userPref.slice(0, 2).toLowerCase();
 		localStorage.lang = (pref in langs ? pref : 'en');
+	}
+}
+
+function addDots() {
+	for (var key in langs) {
+		var cols = langs[key].columns;
+		langs[key].chars +=	repeat(' ', (cols - 4) / 2) + repeat(DOT, 4);
 	}
 }
 
