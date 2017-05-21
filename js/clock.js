@@ -2,6 +2,7 @@ var DOT = '·';
 var COLORS = ['228DFF', 'FF00DE', 'FF1177', 'FF9900', 'FFDD1B', 'B6FF00'];
 
 var langs = {};
+var timeoutId;
 
 var body = document.body;
 var grid = document.getElementById('grid');
@@ -35,7 +36,6 @@ function generateChars() {
 		}
 		grid.appendChild(li);
 	});
-	updateChars();
 }
 
 function percent(items) {
@@ -82,6 +82,13 @@ function updateChars() {
 		});
 		index++;
 	});
+}
+
+function scheduleUpdate() {
+	clearTimeout(timeoutId);
+	var elapsed = Date.now() % 1000;
+	timeoutId = setTimeout(scheduleUpdate, 1000 - elapsed);
+	updateChars();
 }
 
 // Multi language support
@@ -135,7 +142,6 @@ window.onload = function () {
 	addDots();
 	detectLang();
 	generateChars();
-	// TODO: Improve it, detect how much is missing for next step
-	setInterval(updateChars, 10e3);
+	scheduleUpdate();
 	changeTheme(0);
 };
