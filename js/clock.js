@@ -2,7 +2,7 @@ var DOT = '·';
 var COLORS = ['228DFF', 'FF00DE', 'FF1177', 'FF9900', 'FFDD1B', 'B6FF00'];
 
 var langs = {};
-var state = {color:0, lang:'', fx: 1, dots: 1};
+var state = {color:0, lang:'', fx: 1, dots: 1, width:''};
 var timeoutId;
 
 var body = document.body;
@@ -166,6 +166,10 @@ Hammer.on(window, 'load', function () {
 	}
 	if (!state.fx) {
 		body.classList.add('no-transitions');
+	}
+	if (state.width) {
+		body.style.width = state.width + '%';
+		body.style.marginLeft = (100 - state.width) / 2 + '%';
 	}
 	generateChars();
 	scheduleUpdate();

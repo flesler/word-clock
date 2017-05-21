@@ -18,10 +18,11 @@ Swipe :arrow_left:️️️️ and :arrow_right:️️️️ to change time
 
 The state and configuration is persisted on the location's hash. The first 2 should be modified using gestures. After modifying the URL you need to reload to see the changes.
 
-- `color`: A value from 0-5 specifying the color of the clock.
+- `color`: A value from `0-5` specifying the color of the clock.
 - `lang`: At the moment, `en` and `es` are supported.
 - `fx`: Change it to `0` to turn off transitions on slower devices.
 - `dots`: Change it to `0` to hide the dots at the bottom that provide 1-minute precision.
+- `width`: A value from `0-100` specifying the % of the viewport width to use
 
 ## Demo
 
