@@ -1,6 +1,10 @@
 var DOT = '·';
+var COLORS = ['228DFF', 'FF00DE', 'FF1177', 'FF9900', 'FFDD1B', 'B6FF00'];
+
 var langs = {};
-var container = document.getElementById('chars');
+
+var grid = document.getElementById('grid');
+var overlay = document.getElementById('overlay');
 
 function each(list, cb) {
 	for (var i = 0; i < list.length; i++) {
@@ -9,14 +13,11 @@ function each(list, cb) {
 }
 
 function repeat(str, count) {
-	var s = '';
-	while (count-- > 0) s += str;
-	return s;
+	return Array(count+1).join(str);
 }
 
 function generateChars() {
-	// TODO: Show 4 dots for reminder minutes
-	container.innerHTML = '';
+	grid.innerHTML = '';
 	var cols = getLang().columns;
 	var chars = getLang().chars;
 	var rows = chars.length / cols;
@@ -31,13 +32,13 @@ function generateChars() {
 		if (i && i % cols === 0) {
 			li.classList.add('break');
 		}
-		container.appendChild(li);
+		grid.appendChild(li);
 	});
 	updateChars();
 }
 
 function percent(items) {
-	return (100 / items).toFixed(2) + '%';
+	return (100 / items).toFixed(1) + '%';
 }
 
 var fixedTime = null;
@@ -62,7 +63,7 @@ function resetChars(nodes) {
 }
 
 function updateChars() {
-	var nodes = container.getElementsByTagName('li');
+	var nodes = grid.getElementsByTagName('li');
 	var words = getWords();
 	var index = 0;
 
@@ -72,21 +73,8 @@ function updateChars() {
 		each(word, function (chr) {
 			nodes[index++].classList.add('on');
 		});
+		index++;
 	});
-}
-
-function initialize() {
-	addDots();
-	lang = detectLang();
-	generateChars();
-	// TODO: Improve it, detect how much is missing for next step
-	setInterval(updateChars, 10e3);
-	changeTheme(0);
-
-	document.body.onkeydown = function (e) {
-		checkKey(e.keyCode);
-		updateChars();
-	};
 }
 
 var OFFSET = 5 * 60 * 1e3;
@@ -138,5 +126,20 @@ function addDots() {
 function changeTheme(delta) {
 	var theme = parseInt(localStorage.theme) || 0;
 	localStorage.theme = theme = (theme + delta) % 6;
-	document.body.className = 'theme' + (theme + 1);
+	overlay.style.backgroundColor = '#' + COLORS[theme];
+	overlay.style.display = 'block';
 }
+
+window.onload = function () {
+	addDots();
+	detectLang();
+	generateChars();
+	// TODO: Improve it, detect how much is missing for next step
+	setInterval(updateChars, 10e3);
+	changeTheme(0);
+
+	document.body.onkeydown = function (e) {
+		checkKey(e.keyCode);
+		updateChars();
+	};
+};
