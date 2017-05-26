@@ -28,12 +28,16 @@ function readHash() {
 	});
 }
 
-function updateHash() {
+function stateToHash() {
 	var hash = [];
 	for (var key in state) {
 		hash.push(key + '=' + state[key]);
 	}
-	location.hash = hash.join('&');
+	return hash.join('&');
+}
+
+function updateHash() {
+	location.hash = stateToHash();
 }
 
 function generateChars() {
@@ -174,4 +178,11 @@ Hammer.on(window, 'load', function () {
 	generateChars();
 	scheduleUpdate();
 	changeTheme(0);
+});
+
+Hammer.on(window, 'hashchange', function () {
+	// If user modified the hash, reload so they get applied
+	if (location.hash.slice(1) !== stateToHash()) {
+		location.reload();
+	}
 });
