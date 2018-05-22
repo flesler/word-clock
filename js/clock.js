@@ -1,8 +1,8 @@
 var DOT = '·';
-var COLORS = ['228DFF', 'FF00DE', 'FF1177', 'FF9900', 'FFDD1B', 'B6FF00'];
+var COLORS = ['red', 'purple', 'blue', 'limegreen', 'gold'];
 
 var langs = {};
-var state = {color:0, lang:'', fx: 1, dots: 1, width:''};
+var state = {color:0, lang:'', fx: 1, dots: 1, width:'', cycle: 9, background: ''};
 var timeoutId;
 
 var body = document.body;
@@ -144,8 +144,12 @@ function addDots() {
 // Theming
 
 function changeTheme(delta) {
-	state.color = (state.color + delta) % 6;
-	overlay.style.backgroundColor = '#' + COLORS[state.color];
+	state.color = (state.color + delta) % COLORS.length;
+	var color = COLORS[state.color]
+	if (/^[0-9a-f]{6}$/i.test(color)) {
+		color = '#' + color
+	}
+	overlay.style.backgroundColor = color;
 	overlay.style.display = 'block';
 	updateHash();
 }
@@ -174,6 +178,12 @@ Hammer.on(window, 'load', function () {
 	if (state.width) {
 		body.style.width = state.width + '%';
 		body.style.marginLeft = (100 - state.width) / 2 + '%';
+	}
+	if (state.background) {
+		COLORS = [state.background];
+	}
+	if (state.cycle) {
+		setInterval(function() { changeTheme(1); }, state.cycle * 1000);
 	}
 	generateChars();
 	scheduleUpdate();
