@@ -5,6 +5,7 @@ langs.es = {
 	timeToWords: function (hour, mins) {
 		var list = [];
 		var over = mins > 30;
+		hour = hour % 12;
 
 		if (over) {
 			mins = 60 - mins;
