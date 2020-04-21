@@ -61,7 +61,7 @@ function generateChars() {
 }
 
 function percent(items) {
-	return (100 / items).toFixed(1) + '%';
+	return parseInt(1000 / items)/10 + '%';
 }
 
 var OFFSET = 5 * 60 * 1e3;
@@ -78,7 +78,7 @@ function updateTime(sign) {
 
 function getWords() {
 	var now = new Date(getTime());
-	var hour = now.getHours() % 12;
+	var hour = now.getHours();
 	var mins = now.getMinutes();
 	var rest = mins % 5;
 	var dots = repeat(DOT, rest);
@@ -98,7 +98,7 @@ function updateChars() {
 
 	resetChars(nodes);
 	each(words, function (word) {
-		index = getLang().chars.indexOf(word, index);
+		index = getLang().chars.indexOf(word, index-1);
 		// Word not found, also to avoid failing when dots=0
 		if (index === -1) return;
 		each(word, function (chr) {
@@ -137,7 +137,7 @@ function detectLang() {
 function addDots() {
 	for (var key in langs) {
 		var cols = langs[key].columns;
-		langs[key].chars +=	repeat(' ', (cols - 4) / 2) + repeat(DOT, 4);
+		langs[key].chars +=	repeat(' ', parseInt((cols - 4) / 2)) + repeat(DOT, 4);
 	}
 }
 

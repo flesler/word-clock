@@ -3,6 +3,7 @@ langs.en = {
 	_minutes: { '15': 'QUARTER', '20': 'TWENTY', '25': 'TWENTY FIVE', '30': 'HALF' },
 	timeToWords: function (hour, mins) {
 		var list = ['IT', 'IS'];
+		hour = hour % 12;
 
 		if (mins) {
 			var over = mins > 30;
