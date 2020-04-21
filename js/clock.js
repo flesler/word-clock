@@ -61,7 +61,7 @@ function generateChars() {
 }
 
 function percent(items) {
-	return Math.trunc(1000 / items)/10 + '%';
+	return parseInt(1000 / items)/10 + '%';
 }
 
 var OFFSET = 5 * 60 * 1e3;
@@ -137,7 +137,7 @@ function detectLang() {
 function addDots() {
 	for (var key in langs) {
 		var cols = langs[key].columns;
-		langs[key].chars +=	repeat(' ', Math.trunc((cols - 4) / 2)) + repeat(DOT, 4);
+		langs[key].chars +=	repeat(' ', parseInt((cols - 4) / 2)) + repeat(DOT, 4);
 	}
 }
 
